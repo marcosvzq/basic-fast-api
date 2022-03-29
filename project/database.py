@@ -1,6 +1,8 @@
 from datetime import datetime
 from peewee import *
 
+import bcrypt
+
 database = MySQLDatabase('test',
                         user='root',
                         password='',
@@ -9,7 +11,7 @@ database = MySQLDatabase('test',
 
 class User(Model):
     username = CharField(max_length=50, unique= True)
-    password = CharField(max_length=50)
+    password = CharField(max_length=250)
     created_at = DateTimeField(default=datetime.now)
 
     def __str__(self) -> str:
@@ -18,6 +20,12 @@ class User(Model):
     class Meta:
         database = database
         table_name = 'users'
+
+    @classmethod
+    def create_password(cls, password):
+        password = password.encode('utf-8')
+        hashed = bcrypt.hashpw(password, bcrypt.gensalt(10))
+        return hashed
 
 class Movie(Model):
     title = CharField(max_length=50)

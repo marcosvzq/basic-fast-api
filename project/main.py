@@ -38,9 +38,12 @@ async def about():
 
 @app.post('/user/')
 async def create_user(user: UserBaseModel):
+
+    hash_pasword = User.create_password(user.password)
+
     user = User.create(
         username=user.username,
-        password=user.password
+        password=hash_pasword
     )
 
     return user.id
